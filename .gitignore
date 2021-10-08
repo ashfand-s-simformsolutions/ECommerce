@@ -1,0 +1,10 @@
+# vscode extension
+.vscode
+
+# pycashe files
+ECommerce/__pycache__
+ECommerce/migrations/__pycache__
+users/__pycache__
+users/migrations/__pycache__
+
+.env
