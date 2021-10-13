@@ -1,71 +1,92 @@
 from django.db import models
-from django.contrib.auth.models import BaseUserManager, AbstractUser
-from django.core.validators import RegexValidator
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, phone_number, email, password=None):
+    def create_user(self, email, full_name, password=None):
         """
-        Creates and saves a User with the given phone number and password.
+        Creates and saves a User with the given email and password.
         """
-
-        user = self.model(phone_number=phone_number, username=phone_number, email=email)
-
-        user.set_password(password)
-        user.save()
-
-        return user
-
-    def create_superuser(self, phone_number, email, password=None):
-        """
-        Creates and saves a superuser with the given phone number and password.
-        """
+        if not email:
+            raise ValueError('Users must have an email address')
 
         user = self.model(
-            phone_number=phone_number,
-            email=email,
-            username=phone_number,
-            is_staff=True,
-            is_active=True,
-            is_superuser=True,
+            email=self.normalize_email(email),
+            full_name=full_name,
         )
-        user.set_password(password)
-        user.save()
 
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_staffuser(self, email, password, full_name):
+        """
+        Creates and saves a staff user with the given email and password.
+        """
+        user = self.create_user(
+            email,
+            password=password,
+            full_name=full_name,
+        )
+        user.staff = True
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, password, full_name):
+        """
+        Creates and saves a superuser with the given email and password.
+        """
+        user = self.create_user(
+            email,
+            password=password,
+            full_name=full_name,
+        )
+        user.staff = True
+        user.admin = True
+        user.save(using=self._db)
         return user
 
 
-def get_profile_image_filepath(self, filename):
-	return 'profile_images/' + str(self.pk) + '/profile_image.png'
-
-def get_default_profile_image():
-	return "default_image"
-
-
-class User(AbstractUser):
-    USERNAME_FIELD = "phone_number"
-    REQUIRED_FIELDS = ["email"]
-
-    phone_regex = RegexValidator(
-        regex="^(\+91[\-\s]?)?[0]?(91)?[789]\d{9}$", message="Enter valid Indian number"
-    )
-
-    email = models.EmailField(
-        verbose_name="Email address", max_length=255, unique=True, blank=True, null=True
-    )
+class User(AbstractBaseUser):
+    email = models.EmailField(max_length=255 ,unique=True)
+    full_name = models.CharField(max_length=255, null=True, blank=True)
+    is_customer = models.BooleanField(default=True)
     is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
-    is_superuser = models.BooleanField(default=False)
-    phone_number = models.CharField(
-        max_length=20, unique=True, validators=[phone_regex]
-    )
-    username = models.CharField(max_length=20, blank=True, null=True)
-    profile_image = models.ImageField(max_length=255, upload_to=get_profile_image_filepath, null=True, blank=True, default=get_default_profile_image)
+    staff = models.BooleanField(default=False)
+    admin = models.BooleanField(default=False)
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['full_name']
 
     objects = UserManager()
 
+    def get_full_name(self):
+        # The user is identified by their email address
+        return self.email
+
+    def get_short_name(self):
+        # The user is identified by their email address
+        return self.email
+
     def __str__(self):
-        return self.phone_number
+        return self.email
 
     def has_perm(self, perm, obj=None):
-        return self.is_superuser
+        "Does the user have a specific permission?"
+        # Simplest possible answer: Yes, always
+        return True
+
+    def has_module_perms(self, app_label):
+        "Does the user have permissions to view the app `app_label`?"
+        # Simplest possible answer: Yes, always
+        return True
+
+    @property
+    def is_staff(self):
+        "Is the user a member of staff?"
+        return self.staff
+
+    @property
+    def is_admin(self):
+        "Is the user a admin member?"
+        return self.admin

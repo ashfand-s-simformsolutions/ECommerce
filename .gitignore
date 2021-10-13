@@ -6,5 +6,7 @@ ECommerce/__pycache__
 ECommerce/migrations/__pycache__
 users/__pycache__
 users/migrations/__pycache__
+store/__pycache__
+store/migrations/__pycache__
 
 .env

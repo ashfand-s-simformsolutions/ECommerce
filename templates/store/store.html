@@ -9,7 +9,7 @@
 			    <form method="GET">
 				    {{myFilter.form}}
 
-		            <button class="btn btn-secondary" type="submit">Search</button>
+		            <button class="btn btn-outline-secondary hov" type="submit">Search</button>
 		        </form>
 
 		    </div>
@@ -28,8 +28,8 @@
            <hr>
            <h6><strong>Rs {{ product.price }}</strong></h6>
            <hr>
-           <a style="border-radius: 10px;" data-product="{{product.id}}" data-action="add" href="" class="btn btn btn-secondary update-cart">Add to cart</a>
-           <a style="border-radius: 10px; margin: 10px" href="#" class="btn btn-secondary">Details</a>
+           <a data-product="{{product.id}}" data-action="add" href="" class="btn btn-outline-secondary update-cart hov">Add to cart</a>
+           <a href="{% url 'description' product.id %}" class="btn btn-outline-secondary hov">Details</a>
         </div>
     </div>
 		{% endfor %}

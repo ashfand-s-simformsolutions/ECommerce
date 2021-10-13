@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     "store",
 ]
 
+AUTH_USER_MODEL = "users.User"
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -113,7 +115,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTH_USER_MODEL = "users.User"
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
@@ -153,4 +154,5 @@ TEMP = os.path.join(BASE_DIR, "media_cdn/temp")
 
 BASE_URL = "http://127.0.0.1:8000"
 
-LOGIN_REDIRECT_URL = '/admin'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/login/'

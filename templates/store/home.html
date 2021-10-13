@@ -13,7 +13,7 @@
             <hr>
             <div class="card-body">
                 <h6 class="card-title">{{ i.category_name }}</h6>
-                <a style="border-radius: 10px;" href="{% url 'store' i.id %}" class="btn btn-secondary">View</a>
+                <a class="btn btn-outline-secondary hov" href="{% url 'store' i.id %}" class="btn btn-secondary">View</a>
             </div>
         </div>
 		{% endfor %}
