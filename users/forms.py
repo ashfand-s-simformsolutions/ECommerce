@@ -103,12 +103,3 @@ class RegisterForm(forms.ModelForm):
         if commit:
             user.save()
         return user
-
-
-# class LoginForm(forms.ModelForm):
-#     # email = forms.EmailField()
-#     password = forms.CharField(widget=forms.PasswordInput)
-
-#     class Meta:
-#         model = User
-#         fields = ['email', 'password']
